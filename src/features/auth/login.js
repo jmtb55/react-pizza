@@ -16,12 +16,12 @@ const Login = () => {
     }
 
     useEffect(()=>{
-        if (authState.error) alert(authState.error);
+        if (authState.error) window.alert(authState.error);
     }, [authState])
 
     return (
         <div className='login-screen'>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} role="login-form">
                 <input placeholder='user' type='text' name='user' value={user} onChange={e => setUser(e.target.value)}/>
                 <input placeholder='password' type='password' name='password' value={password} onChange={e => setPassword(e.target.value)}/>
                 <button type="submit">Login</button>

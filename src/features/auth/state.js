@@ -27,15 +27,14 @@ export const authSlice = createSlice({
         loginAsyncCompleted: (state, action) => {
             state.loading = false;
             if (action.payload.error) {
-                state.session = null;
                 state.error = action.payload.error;
             } else {
                 state.session = action.payload
-                state.error = null;
             }
         },
         loginAsyncBegin: (state) => {
             state.loading = true;
+            state.error = null;
         }
     },
 })
