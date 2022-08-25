@@ -11,7 +11,7 @@ import Routes from './routes';
 
 export const history = createBrowserHistory();
 export const myRouterMiddleware = routerMiddleware(history);
-const store = configureStore({ reducer: rootReducer, middleware: [myRouterMiddleware], devTools: true });
+const store = configureStore({ reducer: rootReducer});
 
 ReactDOM.render(
     <StrictMode>

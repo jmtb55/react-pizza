@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
+import { login } from './state';
 import './login.css'
+import { useDispatch } from "react-redux";
 
 const Login = () => {
 
+    const dispatch = useDispatch();
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log({user,password});
+        dispatch(login({user,password}))
     }
 
     return (

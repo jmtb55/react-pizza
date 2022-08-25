@@ -6,15 +6,18 @@ const SESSION_KEY = 'session';
 export const login = createAsyncThunk(
     'auth/login',
     async (loginData) => {
-      const response = await callLoginEndpoint(loginData)
-      return response.data;
+      const response = callLoginEndpoint(loginData)
+      return response;
     }
 );
+
+let localStorageSession = localStorage.getItem(SESSION_KEY);
+localStorageSession = localStorageSession && localStorageSession !== 'undefined' ? JSON.parse(localStorageSession) : null;
 
 export const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        session: JSON.parse(localStorage.getItem(SESSION_KEY)),
+        session: localStorageSession,
         loaded: false,
         loading: false,
         error: false,
@@ -30,17 +33,17 @@ export const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(login.fulfilled, (state, action) => {
-            console.log('login successful: ', action.payload);
+            console.log('login successful: ', action);
             state.session = action.payload;
             localStorage.setItem(SESSION_KEY, JSON.stringify(action.payload));
             state.loaded = true;
             state.loading = false;
             state.error = false;
         }).addCase(login.pending, (state, action) => {
-            console.log('login pending: ', action.payload);
+            console.log('login pending: ', action);
             state.loading = true;
         }).addCase(login.rejected, (state, action) => {
-            console.log('login rejected: ', action.payload);
+            console.log('login rejected: ', action);
             state.loading = false;
             state.error = action.payload.error;
         })
