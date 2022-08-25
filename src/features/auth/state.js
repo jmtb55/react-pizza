@@ -5,9 +5,11 @@ const SESSION_KEY = 'session';
 
 export const login = createAsyncThunk(
     'auth/login',
-    async (loginData) => {
-      const response = callLoginEndpoint(loginData)
-      return response;
+    async (loginData, {dispatch}) => {
+        dispatch(loginAsyncBegin());
+        const response = await (await callLoginEndpoint(loginData)).json();
+        dispatch(loginAsyncCompleted(response));
+        return response;
     }
 );
 
@@ -29,27 +31,22 @@ export const authSlice = createSlice({
             state.loading = false;
             state.error = false;
             localStorage.removeItem(SESSION_KEY);
+        },
+        loginAsyncCompleted: (state, action) => {
+            state.loading = false;
+            console.log(action.payload)
+            if (action.payload.error) {
+                state.session = null;
+            } else {
+                state.session = action.payload
+            }
+        },
+        loginAsyncBegin: (state) => {
+            state.loading = true;
         }
     },
-    extraReducers: (builder) => {
-        builder.addCase(login.fulfilled, (state, action) => {
-            console.log('login successful: ', action);
-            state.session = action.payload;
-            localStorage.setItem(SESSION_KEY, JSON.stringify(action.payload));
-            state.loaded = true;
-            state.loading = false;
-            state.error = false;
-        }).addCase(login.pending, (state, action) => {
-            console.log('login pending: ', action);
-            state.loading = true;
-        }).addCase(login.rejected, (state, action) => {
-            console.log('login rejected: ', action);
-            state.loading = false;
-            state.error = action.payload.error;
-        })
-    }
 })
 
-export const { logout } = authSlice.actions;
+export const { logout, loginAsyncCompleted, loginAsyncBegin } = authSlice.actions;
 
 export default authSlice.reducer;
