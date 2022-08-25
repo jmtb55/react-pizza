@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { login } from './state';
 import './login.css'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Login = () => {
 
+    const authState = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
@@ -13,6 +14,10 @@ const Login = () => {
         event.preventDefault();
         dispatch(login({user,password}))
     }
+
+    useEffect(()=>{
+        if (authState.error) alert(authState.error);
+    }, [authState])
 
     return (
         <div className='login-screen'>

@@ -7,12 +7,12 @@ import { useSelector } from 'react-redux';
 
 const AuthenticatedGuard = ({ children }) => {
     const authState = useSelector(state => state.auth);
-    return authState.session ? <>{children}</> : <><Navigate to='/login'/></>;
+    return authState.session ? children: <Navigate to='/login'/>;
 }
 
 const UnathenticatedGuard = ({ children }) => {
     const authState = useSelector(state => state.auth);
-    return authState.session === null ? <>{children}</> : <><Navigate to='/'/></>;
+    return !authState.session ? children : <Navigate to='/'/>;
 }
 
 export default function AppRouter () {

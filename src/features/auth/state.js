@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { callLoginEndpoint } from './api';
 
-const SESSION_KEY = 'session';
-
 export const login = createAsyncThunk(
     'auth/login',
     async (loginData, {dispatch}) => {
@@ -13,32 +11,27 @@ export const login = createAsyncThunk(
     }
 );
 
-let localStorageSession = localStorage.getItem(SESSION_KEY);
-localStorageSession = localStorageSession && localStorageSession !== 'undefined' ? JSON.parse(localStorageSession) : null;
-
 export const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        session: localStorageSession,
-        loaded: false,
+        session: false,
         loading: false,
         error: false,
     },
     reducers: {
         logout: (state) => {
             state.session = null;
-            state.loaded = false;
             state.loading = false;
             state.error = false;
-            localStorage.removeItem(SESSION_KEY);
         },
         loginAsyncCompleted: (state, action) => {
             state.loading = false;
-            console.log(action.payload)
             if (action.payload.error) {
                 state.session = null;
+                state.error = action.payload.error;
             } else {
                 state.session = action.payload
+                state.error = null;
             }
         },
         loginAsyncBegin: (state) => {
